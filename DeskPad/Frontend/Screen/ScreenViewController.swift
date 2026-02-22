@@ -24,9 +24,9 @@ class ScreenViewController: SubscriberViewController<ScreenViewData>, NSWindowDe
         let descriptor = CGVirtualDisplayDescriptor()
         descriptor.setDispatchQueue(DispatchQueue.main)
         descriptor.name = "DeskPad Display"
-        descriptor.maxPixelsWide = 3840
-        descriptor.maxPixelsHigh = 2160
-        descriptor.sizeInMillimeters = CGSize(width: 1600, height: 1000)
+        descriptor.maxPixelsWide = 1280
+        descriptor.maxPixelsHigh = 640
+        descriptor.sizeInMillimeters = CGSize(width: 160, height: 100)
         descriptor.productID = 0x1234
         descriptor.vendorID = 0x3456
         descriptor.serialNum = 0x0001
@@ -36,21 +36,26 @@ class ScreenViewController: SubscriberViewController<ScreenViewData>, NSWindowDe
         self.display = display
 
         let settings = CGVirtualDisplaySettings()
-        settings.hiDPI = 1
+        settings.hiDPI = 0
         settings.modes = [
-            // 16:9
-            CGVirtualDisplayMode(width: 3840, height: 2160, refreshRate: 60),
-            CGVirtualDisplayMode(width: 2560, height: 1440, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1920, height: 1080, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1600, height: 900, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1366, height: 768, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1280, height: 720, refreshRate: 60),
-            // 16:10
-            CGVirtualDisplayMode(width: 2560, height: 1600, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1920, height: 1200, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1680, height: 1050, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1440, height: 900, refreshRate: 60),
-            CGVirtualDisplayMode(width: 1280, height: 800, refreshRate: 60),
+            // // 16:9
+            // CGVirtualDisplayMode(width: 3840, height: 2160, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 2560, height: 1440, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1920, height: 1080, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1600, height: 900, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1366, height: 768, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1280, height: 720, refreshRate: 60),
+            // // 16:10
+            // CGVirtualDisplayMode(width: 2560, height: 1600, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1920, height: 1200, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1680, height: 1050, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1440, height: 900, refreshRate: 60),
+            // CGVirtualDisplayMode(width: 1280, height: 800, refreshRate: 60),
+
+            CGVirtualDisplayMode(width: 1280, height: 640, refreshRate: 60),
+            CGVirtualDisplayMode(width: 512, height: 256, refreshRate: 60),
+            CGVirtualDisplayMode(width: 640, height: 320, refreshRate: 60),
+            CGVirtualDisplayMode(width: 128, height: 64, refreshRate: 60),
         ]
         display.apply(settings)
     }

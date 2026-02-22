@@ -1,3 +1,6 @@
 BuildTools/.build
 BuildTools/.swiftpm
 xcuserdata/
+build/
+.DS_Store
+BuildTools/Package.resolved

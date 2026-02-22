@@ -18,8 +18,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.isMovableByWindowBackground = true
         window.titleVisibility = .hidden
         window.backgroundColor = .white
-        window.contentMinSize = CGSize(width: 400, height: 300)
-        window.contentMaxSize = CGSize(width: 3840, height: 2160)
+        window.contentMinSize = CGSize(width: 100, height: 50)
+        window.contentMaxSize = CGSize(width: 1280, height: 640)
         window.styleMask.insert(.resizable)
         window.collectionBehavior.insert(.fullScreenNone)
 
