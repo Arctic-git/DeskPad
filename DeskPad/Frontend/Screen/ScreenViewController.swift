@@ -198,8 +198,8 @@ class ScreenViewController: SubscriberViewController<ScreenViewData>, NSWindowDe
                 ] as CFDictionary,
                 queue: .main,
                 handler: { [weak self] _, _, frameSurface, _ in
-                    if let surface = frameSurface {
-                        self?.view.layer?.contents = surface
+                    guard let self = self, let surface = frameSurface else { return }
+                    self.view.layer?.contents = surface
 
 //                        send unscaled BGRA
 //                        IOSurfaceLock(surface, IOSurfaceLockOptions.readOnly, nil)
@@ -211,36 +211,36 @@ class ScreenViewController: SubscriberViewController<ScreenViewData>, NSWindowDe
 //                        let buffer = UnsafeRawBufferPointer(start: baseAddress, count: bytesPerRow * height)
 //                        let data = Data(buffer)
 //                        // Send over TCP
-//                        self?.frameSender.send(data: data)
+//                        self.frameSender.send(data: data)
 //                        IOSurfaceUnlock(surface, IOSurfaceLockOptions.readOnly, nil)
 
-                        // Wrap IOSurface in CIImage
-                        let ciImage = CIImage(ioSurface: surface)
+                    // Wrap IOSurface in CIImage
+                    let ciImage = CIImage(ioSurface: surface)
 
-                        // Scale to 128x64
-                        let scaleX = 128.0 / CGFloat(IOSurfaceGetWidth(surface))
-                        let scaleY = 64.0 / CGFloat(IOSurfaceGetHeight(surface))
-                        let scaledImage = ciImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+                    // Scale to 128x64
+                    let scaleX = 128.0 / CGFloat(IOSurfaceGetWidth(surface))
+                    let scaleY = 64.0 / CGFloat(IOSurfaceGetHeight(surface))
+                    let scaledImage = ciImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY), highQualityDownsample: true)
 
-                        // Render into bitmap
-                        var bitmap = [UInt8](repeating: 0, count: 128 * 64 * 4) // BGRA
-                        self?.ciContext.render(
-                            scaledImage,
-                            toBitmap: &bitmap,
-                            rowBytes: 128 * 4,
-                            bounds: CGRect(x: 0, y: 0, width: 128, height: 64),
-                            format: .BGRA8,
-                            colorSpace: CGColorSpaceCreateDeviceRGB()
-                        )
+                    // Render into bitmap
+                    var bitmap = [UInt8](repeating: 0, count: 128 * 64 * 4) // BGRA
+                    self.ciContext.render(
+                        scaledImage,
+                        toBitmap: &bitmap,
+                        rowBytes: 128 * 4,
+                        bounds: CGRect(x: 0, y: 0, width: 128, height: 64),
+                        format: .BGRA8,
+                        colorSpace: CGColorSpaceCreateDeviceRGB()
+                    )
 
-//                        self?.frameSender.send(data: Data(bitmap))
+//                        self.frameSender.send(data: Data(bitmap))
 
-                        // convert to rgb
-                        var rgbData = [UInt8](repeating: 0, count: 128 * 64 * 3)
-                        for i in 0 ..< 128 * 64 {
-                            rgbData[i * 3 + 0] = bitmap[i * 4 + 2]
-                            rgbData[i * 3 + 1] = bitmap[i * 4 + 1]
-                            rgbData[i * 3 + 2] = bitmap[i * 4 + 0]
+                    // convert to rgb
+                    var rgbData = [UInt8](repeating: 0, count: 128 * 64 * 3)
+                    for i in 0 ..< 128 * 64 {
+                        rgbData[i * 3 + 0] = bitmap[i * 4 + 2]
+                        rgbData[i * 3 + 1] = bitmap[i * 4 + 1]
+                        rgbData[i * 3 + 2] = bitmap[i * 4 + 0]
 
 //                            let r = UInt16(bitmap[i * 4 + 2]) // R
 //                            let g = UInt16(bitmap[i * 4 + 1]) // G
@@ -248,11 +248,10 @@ class ScreenViewController: SubscriberViewController<ScreenViewData>, NSWindowDe
 //                            rgbData[i * 3 + 0] = UInt8((r * r) >> 8)
 //                            rgbData[i * 3 + 1] = UInt8((g * g) >> 8)
 //                            rgbData[i * 3 + 2] = UInt8((b * b) >> 8)
-                        }
-
-                        // Send over TCP
-                        self?.frameSender.send(data: Data(rgbData))
                     }
+
+                    // Send over TCP
+                    self.frameSender.send(data: Data(rgbData))
                 }
             )
             self.stream = stream
